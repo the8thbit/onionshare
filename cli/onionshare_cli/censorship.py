@@ -53,8 +53,8 @@ class CensorshipCircumvention(object):
             self.api_proxies = self.meek.meek_proxies
         if onion:
             self.onion = onion
-            if not self.onion.is_authenticated:
-                return False
+            if not self.onion.is_authenticated():
+                return
             else:
                 self.common.log(
                     "CensorshipCircumvention",
