@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from .censorship import CensorshipCircumvention
-from .meek import Meek
+from .meek import Meek, MeekNotFound
 from stem.control import Controller
 from stem import ProtocolError, SocketClosed
 from stem.connection import MissingPassword, UnreadableCookieFile, AuthenticationFailure
@@ -1012,7 +1012,15 @@ class Onion(object):
                 "Updating the built-in bridges. Trying via Meek (no Tor)",
             )
             meek = Meek(self.common)
-            meek.start()
+            try:
+                meek.start()
+            except MeekNotFound:
+                self.common.log(
+                    "Onion",
+                    "update_builtin_bridges",
+                    "Could not update built-in bridges because Meek is unavailable",
+                )
+                return False
             self.censorship_circumvention = CensorshipCircumvention(
                 self.common, meek, None
             )
